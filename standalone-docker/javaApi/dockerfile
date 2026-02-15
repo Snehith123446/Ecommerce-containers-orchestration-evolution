@@ -1,0 +1,14 @@
+FROM openjdk:8 AS JAVA_API_ARTIFACT
+WORKDIR /JAVA_API_ARTIFACT
+RUN apt update && apt install maven -y
+COPY ./* .
+RUN mvn install -DskipTests
+
+## above image will build the java jar file post building the image we dont require the maven in our runtime
+
+FROM openjdk:8
+WORKDIR /app
+COPY --from=JAVA_API_ARTIFACT /JAVA_API_ARTIFACT/target/*.jar ./book-work-0.0.1.jar
+
+EXPOSE 9000
+ENTRYPOINT ['java','-jar','book-work-0.0.1.jar']
