@@ -1,0 +1,80 @@
+🐳 Docker Compose Deployment
+Single-Host Service Orchestratio
+This stage evolves the application from manually managed standalone containers to a declarative, service-based deployment model using Docker Compose.
+Unlike the standalone approach, Compose defines infrastructure as code.
+
+Services Defined
+
+--> MongoDB
+--> MySQL
+--> Node.js API
+--> Java API
+--> Angular Client
+--> NGINX Reverse Proxy
+
+All services run on a single Docker host but are defined in a single docker-compose.yml.
+
+🔹 What Changed From Standalone?
+
+| Standalone Docker           | Docker Compose              |
+| --------------------------- | --------------------------- |
+| Manual container runs       | Declarative YAML definition |
+| Manual network creation     | Automatic network creation  |
+| Manual startup order        | depends_on support          |
+| Per-container configuration | Centralized configuration   |
+
+
+🔹 Project Structure
+============================================================================================================================================================
+02-docker-compose/
+│
+├── docker-compose.yml
+├── .env
+└── nginx/
+    └── default.conf
+🔹 Core Concepts Implemented
+1️⃣ Service Definition
+============================================================================================================================================================
+Each container becomes a service:
+services:
+  mongo:
+    image: mongo
+    volumes:
+      - mongo_data:/data/db
+Compose abstracts container lifecycle management.
+
+2️⃣ Automatic Networking
+============================================================================================================================================================
+Compose automatically:
+Creates a project-specific bridge network
+Enables service name resolution
+Removes need for manual docker network create
+mongo
+emartdb
+api
+webapi
+
+3️⃣ Volume Management
+============================================================================================================================================================
+volumes:
+  mongo_data:
+  mysql_data:
+
+4️⃣ Startup Order (Important Limitation)
+============================================================================================================================================================
+depends_on:
+  - mongo
+
+🔹 Deployment Commands
+============================================================================================================================================================
+docker compose up -d
+Verify services:
+docker compose ps
+Stop services:
+docker compose down
+
+🌐 Access Application
+============================================================================================================================================================
+http://<server-ip>:80
+
+
